@@ -360,11 +360,11 @@ def recipe():
 		global recipes, recipeButtons, foodName, ingredients, backButton
 		
 		def back():
-			global recipe
-			s.delete('all')
-			s.unbind("<Button-1>")
+			global recipe, backButton, backToMain
 			backButton.destroy()
 			backToMainBtn.destroy()
+			s.delete('all')
+			s.unbind("<Button-1>")	
 			recipeInput()
 			
 		backButton = Button(root, text = "Go to Input Page", command = back, font="Arial 15", bg="#fbfcca",anchor = CENTER)
@@ -372,11 +372,11 @@ def recipe():
 		backButton.place(x=450, y=200,height=50,width=300,anchor=CENTER)
 
 		def backToMain():
-			global recipes
+			global recipes, backButton, backToMain
 			s.delete('all')
 			s.unbind("<Button-1>")
 			backToMainBtn.destroy()
-			backButton.destroy
+			backButton.destroy()
 			startPage()
 		
 		backToMainBtn = Button(root, text = "Go Home", command = backToMain, font="Arial 15", bg="#fbfcca",anchor = CENTER)
