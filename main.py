@@ -19,25 +19,15 @@ s = Canvas(root, width= 900, height=1600, bg='#f3ebfc')
 s.pack(fill = BOTH, expand=True)
 
 def replacements():
-	global replTitle, replType, replRatio, replRatioType
-
-	root = Tk()
-	root.geometry("900x1600")
-	#make sure app can't be resized--------------------------------------
-	root.resizable(width=False, height=False)
-	root.title('search')
+	global root, s, replTitle, replType, replRatio, replRatioType, backBtn
 	
-	#Define Canvas--------------------------------------
-	s = Canvas(root, width=900, height=1600, bd=0, highlightthickness=0, background = '#af98d6')
-	s.pack(fill="both", expand=True)
-	'''
 	# Define Background Image for replacements
-	replBg = ImageTk.PhotoImage(file='images/replBackg.png')
+	replBg = ImageTk.PhotoImage(file = 'image/download.png')
 	
 	# Put the image on the canvas
 	s.create_image(450, 800, image = (replBg), anchor= CENTER)
 
-	'''
+
 	#default replacements--------------------------------------
 	replTitle = ['Stevia for Sugar', 'Broccoli for Asparagus', 'Whole Wheat for White Rice']
 	replType = ['Low Calories Suggestion', 'Environmentally Friendlier Suggestion', 'Healthier Suggestion']
@@ -75,7 +65,7 @@ def replacements():
 					searchPlace.append(i)
 					
 		s.delete('all')
-		#s.create_image(0,0, image=replBg, anchor= 'nw')
+		s.create_image(0,0, image=replBg, anchor= 'nw')
 	
 		search()
 		searchBox.insert(0, Searched)
@@ -99,7 +89,7 @@ def replacements():
 				
 	#showing replacements--------------------------------------
 	def createRepl():
-		global replTitle, replType, replRatio, replRatio
+		global replTitle, replType, replRatio, replRatio, backBtnWindow, uploadBtnWindow
 		for i in range(len(replTitle)):
 			replBox = s.create_rectangle(150, 300 + i * 250, 750, 500 + i * 250, fill = '#f4e9d2')
 			repl = s.create_text(450, 340 + i*250 , text= replTitle[i], fill="black", font=('Helvetica Bold', 30))
@@ -112,8 +102,7 @@ def replacements():
 				uploadBtn = Button(root, text= 'Upload My Replacement', font = ('Helvetica', 25),fg= "#000000", background = '#f4e9d2', command = lambda: upload())
 				uploadBtnWindow = s.create_window(150, 300 + (i+1)*250 , width=600, anchor = NW, window = uploadBtn)
 				
-				backBtn = Button (root, text = 'Back', font = ('Helvetica', 25), fg = '#000000', background = '#af98d6', command = lambda : back())
-				backBtnWindow = s.create_window(450, 1500, width = 100, anchor = CENTER, window = backBtn)
+		
 	
 	def upload():
 		global suggestionBar, ratioBar, suggestion_inside, ratioOptions_inside, replTitleBox, replRatioBox
@@ -141,7 +130,7 @@ def replacements():
 		suggestionBar.place(x=110, y=740,height=50,anchor=NW)
 
 		#textbox for ratio--------------------------------------
-		replRatioBox = Entry(root, font=("Helvetica", 25), width=15, fg="#000000", borderwidth=0)
+		replRatioBox = Entry(root, font=("Helvetica", 25), width=17, fg="#000000", borderwidth=0)
 		replRatioBox.insert(0, "ratio (ex: 1:1 or N/A)")
 		replRatioBoxWindow = s.create_window(110, 820, anchor="nw", window=replRatioBox)
 	
@@ -152,7 +141,7 @@ def replacements():
 		ratioBar = OptionMenu(s, ratioOptions_inside, *ratioOptions)
 		ratioBar.config(font = ('Helvetica', 25))
 		ratioBar.pack()
-		ratioBar.place(x=450, y=820,height=50,anchor=NW)
+		ratioBar.place(x=480, y=820 ,height=50,anchor=NW)
 		
 		#updating the canvas
 		s.update()
@@ -161,7 +150,7 @@ def replacements():
 	def cancel():
 		global suggestionBar, ratioBar
 		s.delete('all')
-		#s.create_image(0,0, image=replBg, anchor="nw")
+		s.create_image(0,0, image=replBg, anchor="nw")
 		suggestionBar.destroy()
 		ratioBar.destroy()
 		createRepl()
@@ -174,20 +163,28 @@ def replacements():
 		replRatio.append(replRatioBox.get())
 		replRatioType.append(ratioOptions_inside.get())
 		s.delete('all')
-		#s.create_image(0,0, image=replBg, anchor="nw")
+		s.create_image(0,0, image=replBg, anchor="nw")
 		suggestionBar.destroy()
 		ratioBar.destroy()
 		createRepl()
 		search()
 
+	
 	def back():
 		s.delete('all')
+		s.unbind("<Button-1>")
+		backBtn.destroy()
 		startPage()
+
+	backBtn = Button (root, text = 'Back', font = ('Helvetica', 25), fg = '#000000', background = '#af98d6', command = back)
+	backBtn.pack()
+	backBtn.place(x=450,y=1400,width=200,height=50,anchor=CENTER)
 	
 	createRepl()
 	search()
-	s.bind("<Button-1>",searchClick)
+	s.bind("<Button-1>",searchClick, add="+")
 	root.mainloop()
+
 
 def recipe():
 	global bg, plusBtn, createBtnWindow, indexNum, textBoxArray, deleteBtnArray, counter, deleteBtnTextArray, foodNameEntry, recipes
@@ -314,6 +311,7 @@ def recipe():
 			
 			#reset ingredients array
 			ingredients = []
+			
 			for i in range(len(textBoxArray)):
 				textBox = textBoxArray[i]
 				ingredients.append(textBox.get())
@@ -423,19 +421,23 @@ def recipe():
 						backButton = Button(root, text = "Back", command = back, font="Arial 15", bg="#fbfcca",anchor = CENTER)
 						backButton.pack()
 						backButton.place(x=450, y=200,height=50,width=300,anchor=CENTER)
-		s.bind("<Button-1>", recipeOpen)
+		s.bind("<Button-1>", recipeOpen, add="+")
 	
 	recipeSaved()
 
 labels = []
+labelsStored = []
 icons = []
+iconsStored = []
 for i in range(35):
 	labels.append('')
 	icons.append('')
+	labelsStored.append('')
+	iconsStored.append('')
 
 	
 def fridgeOpen():
-	global foodEntry, categoryBar, fridge, drinksCategory, veggiesCategory, legumesCategory, fruitsCategory, meatsCategory, enterButton, nFood, coordinates, closeButton, labels
+	global foodEntry, categoryBar, fridge, drinksCategory, veggiesCategory, legumesCategory, fruitsCategory, meatsCategory, enterButton, nFood, coordinates, closeButton, labels, labelsStored, iconsStored
 	s.delete('all')
 	foodEntry = Entry(s)
 	foodEntry.insert(0, "Insert food name")
@@ -469,17 +471,6 @@ def fridgeOpen():
 		else:
 			x += 80
 		coordinates.append([x,y])
-
-	def close(event):
-		x = event.x
-		y = event.y
-
-		if 125 <= x <= 160 and 610 <= y <= 1010:
-			enterButton.destroy()
-			foodEntry.destroy()
-			categoryBar.destroy()
-			s.delete('all')
-			fridgeClosed()
 	
 	def getEntry():
 		global foodInput, categoryInput
@@ -496,8 +487,6 @@ def fridgeOpen():
 			labelFruits()
 		elif categoryInput == "meat":
 			labelMeats()
-		elif categoryInput == "other":
-			labelOthers()
 	
 	enterButton = Button(root, text = "Enter", command = getEntry, font="Arial 15", bg="#fbfcca",anchor = CENTER)
 	enterButton.pack()
@@ -526,81 +515,68 @@ def fridgeOpen():
 		return label
 	
 	def labelDrinks():
-		global foodInput, drinks, nFood, drinksCategory, label, coordinates
+		global foodInput, drinks, nFood, drinksCategory, label, coordinates, labelsStored, iconsStored
 		index = labels.index('')
 		coordinate = coordinates[index]
 		x = coordinate[0]
 		y = coordinate[1]
-		foodIcon = s.create_image(x,y,image=drinksCategory,anchor=CENTER)
+		icons[index] = s.create_image(x,y,image=drinksCategory,anchor=CENTER)
 		label = labelFood(foodInput)
-		s.create_text(x,y+47,text=label,font="Arial 10")
-		icons[index] = foodIcon
-		labels[index] = label
+		labels[index] = s.create_text(x,y+47,text=label,font="Arial 10")
+		iconsStored[index] = drinksCategory
+		labelsStored[index] = label
 		nFood += 1
 	
 	def labelVeggies():
-		global foodInput, veggies, nFood, veggiesCategory
+		global foodInput, veggies, nFood, veggiesCategory, label, coordinates, labelsStored, iconsStored
 		index = labels.index('')
 		coordinate = coordinates[index]
 		x = coordinate[0]
 		y = coordinate[1]
-		foodIcon = s.create_image(x,y,image=veggiesCategory,anchor=CENTER)
+		icons[index] = s.create_image(x,y,image=veggiesCategory,anchor=CENTER)
 		label = labelFood(foodInput)
-		s.create_text(x,y+47,text=label,font="Arial 10")
-		icons[index] = foodIcon
-		labels[index] = label
+		labels[index] = s.create_text(x,y+47,text=label,font="Arial 10")
+		iconsStored[index] = veggiesCategory
+		labelsStored[index] = label
 		nFood += 1
 		
 	def labelLegumes():
-		global foodInput, legumes, nFood, xCoordinate, yCoordinate
+		global foodInput, legumes, nFood, xCoordinate, yCoordinate, label, coordinates, labelsStored, iconsStored
 		index = labels.index('')
 		coordinate = coordinates[index]
 		x = coordinate[0]
 		y = coordinate[1]
-		foodIcon = s.create_image(x,y,image=legumesCategory,anchor=CENTER)
+		icons[index] = s.create_image(x,y,image=legumesCategory,anchor=CENTER)
 		label = labelFood(foodInput)
-		s.create_text(x,y+47,text=label,font="Arial 10")
-		icons[index] = foodIcon
-		labels[index] = label
+		labels[index] = s.create_text(x,y+47,text=label,font="Arial 10")
+		iconsStored[index] = legumesCategory
+		labelsStored[index] = label
 		nFood += 1
 	
 	def labelFruits():
-		global foodInput, fruits, nFood, xCoordinate, yCoordinate
+		global foodInput, fruits, nFood, xCoordinate, yCoordinate, label, coordinates, labelsStored, iconsStored
 		index = labels.index('')
 		coordinate = coordinates[index]
 		x = coordinate[0]
 		y = coordinate[1]
-		foodIcon = s.create_image(x,y,image=fruitsCategory,anchor=CENTER)
+		icons[index] = s.create_image(x,y,image=fruitsCategory,anchor=CENTER)
 		label = labelFood(foodInput)
-		s.create_text(x,y+47,text=label,font="Arial 10")
-		icons[index] = foodIcon
-		labels[index] = label
+		labels[index] = s.create_text(x,y+47,text=label,font="Arial 10")
+		iconsStored[index] = fruitsCategory
+		labelsStored[index] = label
 		nFood += 1
 	
 	def labelMeats():
-		global foodInput, meats, nFood, xCoordinate, yCoordinate
+		global foodInput, meats, nFood, xCoordinate, yCoordinate, label, coordinates, labelsStored, iconsStored
 		index = labels.index('')
 		coordinate = coordinates[index]
 		x = coordinate[0]
 		y = coordinate[1]
-		foodIcon = s.create_image(x,y,image=meatsCategory, anchor=CENTER)
+		icons[index] = s.create_image(x,y,image=meatsCategory, anchor=CENTER)
 		label = labelFood(foodInput)
-		s.create_text(x,y+47,text=label,font="Arial 10")
-		icons[index] = foodIcon
-		labels[index] = label
-		nFood += 1
-	
-	def labelOthers():
-		global foodInput, others, nFood, xCoordinate, yCoordinate
-		index = labels.index('')
-		coordinate = coordinates[index]
-		x = coordinate[0]
-		y = coordinate[1]
-		foodIcon = s.create_text(x,y,text=' ')
-		label = labelFood(foodInput)
-		s.create_text(x,y+47,text=label,font="Arial 10")
-		icons[index] = foodIcon
-		labels[index] = label
+		labels[index] = s.create_text(x,y+47,text=label,font="Arial 10")
+		iconsStored[index] = meatsCategory
+		labelsStored[index] = label
 		nFood += 1
 	
 	s.create_image(450,800,image=fridge)
@@ -609,171 +585,283 @@ def fridgeOpen():
 	for i in range(index):
 		x = coordinates[i][0]
 		y = coordinates[i][1]
-		s.create_text(x,y+47,text=labels[i],font="Arial 10")
+		labels[i] = s.create_text(x,y+47,text=labelsStored[i],font="Arial 10")
+		icons[i] = s.create_image(x,y,image=iconsStored[i], anchor=CENTER)
 	s.update()
 	
 	#PLEASE DO NOT TOUCH#
 	def removeFood(event):
 		x = event.x
 		y = event.y
-		
+
+		if 125 <= x <= 160 and 610 <= y <= 1010:
+			enterButton.destroy()
+			foodEntry.destroy()
+			categoryBar.destroy()
+			s.delete('all')
+			fridgeClosed()
+			
 		if 310 <= y <= 430:
 			if 250 <= x <= 330:
 				s.delete(labels[0])
 				labels[0] = ''
 				s.delete(icons[0])
+				icons[0] = ''
+				labelsStored[0] = ''
+				iconsStored[0] = ''
 			elif 330 <= x <= 410:
 				s.delete(labels[1])
 				labels[1] = ''  
 				s.delete(icons[1])
+				icons[1] = ''
+				labelsStored[1] = ''
+				iconsStored[1] = ''
 			elif 410 <= x <= 490:
 				s.delete(labels[2])
 				labels[2] = ''
 				s.delete(icons[2])
+				icons[2] = ''
+				labelsStored[2] = ''
+				iconsStored[2] = ''
 			elif 490 <= x <= 570:
 				s.delete(labels[3])
 				labels[3] = ''
 				s.delete(icons[3])
+				icons[3] = ''
+				labelsStored[3] = ''
+				iconsStored[3] = ''
 			elif 570 <= x <= 650:
 				s.delete(labels[4])
 				labels[4] = ''
 				s.delete(icons[4])
+				icons[4] = ''
+				labelsStored[4] = ''
+				iconsStored[4] = ''
 			
 		elif 450 <= y <= 570:
 			if 250 <= x <= 330:
 				s.delete(labels[5])
 				labels[5] = ''
 				s.delete(icons[5])
+				icons[5] = ''
+				labelsStored[5] = ''
+				iconsStored[5] = ''
 			elif 330 <= x <= 410:
 				s.delete(labels[6])
 				labels[6] = ''  
 				s.delete(icons[6])
+				icons[6] = ''
+				labelsStored[6] = ''
+				iconsStored[6] = ''
 			elif 410 <= x <= 490:
 				s.delete(labels[7])
 				labels[7] = ''
 				s.delete(icons[7])
+				icons[7] = ''
+				labelsStored[7] = ''
+				iconsStored[7] = ''
 			elif 490 <= x <= 570:
 				s.delete(labels[8])
 				labels[8] = ''
 				s.delete(icons[8])
+				icons[8] = ''
+				labelsStored[8] = ''
+				iconsStored[8] = ''
 			elif 570 <= x <= 650:
 				s.delete(labels[9])
 				labels[9] = ''
 				s.delete(icons[9])
+				icons[9] = ''
+				labelsStored[9] = ''
+				iconsStored[9] = ''
 			
 		elif 590 <= y <= 710:
 			if 250 <= x <= 330:
 				s.delete(labels[10])
 				labels[10] = ''
 				s.delete(icons[10])
+				icons[10] = ''
+				labelsStored[10] = ''
+				iconsStored[10] = ''
 			elif 330 <= x <= 410:
 				s.delete(labels[11])
 				labels[11] = ''  
 				s.delete(icons[11])
+				icons[11] = ''
+				labelsStored[11] = ''
+				iconsStored[11] = ''
 			elif 410 <= x <= 490:
 				s.delete(labels[12])
 				labels[12] = ''
 				s.delete(icons[12])
+				icons[12] = ''
+				labelsStored[12] = ''
+				iconsStored[12] = ''
 			elif 490 <= x <= 570:
 				s.delete(labels[13])
 				labels[13] = ''
 				s.delete(icons[13])
+				icons[13] = ''
+				labelsStored[13] = ''
+				iconsStored[13] = ''
 			elif 570 <= x <= 650:
 				s.delete(labels[14])
 				labels[14] = ''
 				s.delete(icons[14])
+				icons[14] = ''
+				labelsStored[14] = ''
+				iconsStored[14] = ''
 			
 		elif 730 <= y <= 850:	
 			if 250 <= x <= 330:
 				s.delete(labels[15])
 				labels[15] = ''
 				s.delete(icons[15])
+				icons[15] = ''
+				labelsStored[15] = ''
+				iconsStored[15] = ''
 			elif 330 <= x <= 410:
 				s.delete(labels[16])
 				labels[16] = ''  
 				s.delete(icons[16])
+				icons[16] = ''
+				labelsStored[16] = ''
+				iconsStored[16] = ''
 			elif 410 <= x <= 490:
 				s.delete(labels[17])
 				labels[17] = ''
 				s.delete(icons[17])
+				icons[17] = ''
+				labelsStored[17] = ''
+				iconsStored[17] = ''
 			elif 490 <= x <= 570:
 				s.delete(labels[18])
 				labels[18] = ''
 				s.delete(icons[18])
+				icons[18] = ''
+				labelsStored[18] = ''
+				iconsStored[18] = ''
 			elif 570 <= x <= 650:
 				s.delete(labels[19])
 				labels[19] = ''
 				s.delete(icons[19])
+				icons[19] = ''
+				labelsStored[19] = ''
+				iconsStored[19] = ''
 			
 		elif 870 <= y <= 990:
 			if 250 <= x <= 330:
 				s.delete(labels[20])
 				labels[20] = ''
 				s.delete(icons[20])
+				icons[20] = ''
+				labelsStored[20] = ''
+				iconsStored[20] = ''
 			elif 330 <= x <= 410:
 				s.delete(labels[21])
 				labels[21] = ''  
 				s.delete(icons[21])
+				icons[21] = ''
+				labelsStored[21] = ''
+				iconsStored[21] = ''
 			elif 410 <= x <= 490:
 				s.delete(labels[22])
 				labels[22] = ''
 				s.delete(icons[22])
+				icons[22] = ''
+				labelsStored[22] = ''
+				iconsStored[22] = ''
 			elif 490 <= x <= 570:
 				s.delete(labels[23])
 				labels[23] = ''
 				s.delete(icons[23])
+				icons[23] = ''
+				labelsStored[23] = ''
+				iconsStored[23] = ''
 			elif 570 <= x <= 650:
 				s.delete(labels[24])
 				labels[24] = ''
 				s.delete(icons[24])
+				icons[24] = ''
+				labelsStored[24] = ''
+				iconsStored[24] = ''
 		
 		elif 1010 <= y <= 1130:
 			if 250 <= x <= 330:
 				s.delete(labels[25])
 				labels[25] = ''
 				s.delete(icons[25])
+				icons[25] = ''
+				labelsStored[25] = ''
+				iconsStored[25] = ''
 			elif 330 <= x <= 410:
 				s.delete(labels[26])
 				labels[26] = ''  
-				s.delete(icons[1])
+				s.delete(icons[26])
+				icons[26] = ''
+				labelsStored[26] = ''
+				iconsStored[26] = ''
 			elif 410 <= x <= 490:
 				s.delete(labels[27])
 				labels[27] = ''
 				s.delete(icons[27])
+				icons[27] = ''
+				labelsStored[27] = ''
+				iconsStored[27] = ''
 			elif 490 <= x <= 570:
 				s.delete(labels[28])
 				labels[28] = ''
 				s.delete(icons[28])
+				icons[28] = ''
+				labelsStored[28] = ''
+				iconsStored[28] = ''
 			elif 570 <= x <= 650:
 				s.delete(labels[29])
 				labels[29] = ''
 				s.delete(icons[29])
+				icons[29] = ''
+				labelsStored[29] = ''
+				iconsStored[29] = ''
 		
 		elif 1150 <= y <= 1270:
 			if 250 <= x <= 330:
 				s.delete(labels[30])
 				labels[30] = ''
 				s.delete(icons[30])
+				icons[30] = ''
+				labelsStored[30] = ''
+				iconsStored[30] = ''
 			elif 330 <= x <= 410:
 				s.delete(labels[31])
 				labels[31] = ''  
 				s.delete(icons[31])
+				icons[31] = ''
+				labelsStored[31] = ''
+				iconsStored[31] = ''
 			elif 410 <= x <= 490:
 				s.delete(labels[32])
 				labels[32] = ''
 				s.delete(icons[32])
+				icons[32] = ''
+				labelsStored[32] = ''
+				iconsStored[32] = ''
 			elif 490 <= x <= 570:
 				s.delete(labels[33])
 				labels[33] = ''
 				s.delete(icons[33])
+				icons[33] = ''
+				labelsStored[33] = ''
+				iconsStored[33] = ''
 			elif 570 <= x <= 650:
 				s.delete(labels[34])
 				labels[34] = ''
 				s.delete(icons[34])
+				icons[34] = ''
+				labelsStored[34] = ''
+				iconsStored[34] = ''
 
 
-	s.bind("<Button-1>", removeFood)
-	s.bind("<Button-1>", close)
+	s.bind("<Button-1>", removeFood, add="+")
 
 
 def fridgeClosed():
@@ -800,7 +888,7 @@ def fridgeClosed():
 	backButton.pack()
 	backButton.place(x=450, y=1500,height=70,width=300,anchor=CENTER)
 		
-	s.bind("<Button-1>", open)
+	s.bind("<Button-1>", open, add="+")
 	
 def startPage():
 	global logo, fridgeButton, recipeButton, replacementButton, recipes
